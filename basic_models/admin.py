@@ -47,6 +47,7 @@ class UserModelAdmin(ModelAdmin):
 
 
 class ActiveModelAdmin(ModelAdmin):
+    """ModelAdmin subclass that adds activate and delete actions and situationally removes the delete action"""
     actions = ['activate', 'deactivate']
 
     def activate(self, request, queryset):
@@ -70,14 +71,21 @@ class ActiveModelAdmin(ModelAdmin):
 
     deactivate.short_description = ugettext_lazy("Deactivate selected %(verbose_name_plural)s")
 
+    def get_actions(self, request):
+        actions = super(ActiveModelAdmin, self).get_actions(request)
+        if not self.has_delete_permission(request):
+            if 'delete_selected' in actions:
+                del actions['delete_selected']
+        return actions
+
 
 class TimestampedModelAdmin(ModelAdmin):
-    """ModelAdmin subclass that will automatically update created_by or updated_by fields if they exist"""
+    """ModelAdmin subclass that will set created_at and updated_at fields to readonly"""
     readonly_fields = ('created_at', 'updated_at')
 
 
 class DefaultModelAdmin(UserModelAdmin, ActiveModelAdmin, TimestampedModelAdmin):
-    """ModelAdmin subclass that combines functionality of UserModel, ActiveModel, and TimestampedModel admins"""
+    """ModelAdmin subclass that combines functionality of UserModel, ActiveModel, and TimestampedModel admins and defintes a Meta fieldset"""
     readonly_fields = UserModelAdmin.readonly_fields + TimestampedModelAdmin.readonly_fields
     fieldsets = (
         ('Meta', {'fields': ('is_active', 'created_at', 'created_by', 'updated_at', 'updated_by'), 'classes': ('collapse',)}),
