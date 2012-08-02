@@ -94,7 +94,7 @@ class DefaultModelAdmin(UserModelAdmin, ActiveModelAdmin, TimestampedModelAdmin)
 
 class SlugModelAdmin(DefaultModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('slug','name')
+    list_display = ('name','slug','is_active')
     fieldsets = (
         (None, {'fields': ('name', 'slug')}),
     ) + DefaultModelAdmin.fieldsets
