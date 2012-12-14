@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from setuptools import setup, find_packages
-from basic_models import VERSION
 import os
+
+# execute this file to get VERSION in the local namespace, but dont import the module
+execfile(os.path.join(os.path.dirname(__file__), 'basic_models/version.py'))
 
 
 def find_package_data(**packages):

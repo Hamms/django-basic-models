@@ -17,11 +17,12 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import models
+from django.template.defaultfilters import slugify
 from cachemodel import models as cachemodels
+from copy import deepcopy
 import re
 
 from basic_models.managers import HasActiveManager, IsActiveManager, SlugModelManager, IsActiveSlugModelManager, OnlyOneActiveManager
-from basic_models.utils import u_slugify
 
 
 class ActiveModel(cachemodels.CacheModel):
@@ -64,9 +65,12 @@ class SlugModel(DefaultModel):
     class Meta:
         abstract = True
 
+    def natural_key(self):
+        return [self.slug]
+
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = u_slugify(self.name)
+            self.slug = slugify(self.name)
         super(UnicodeSlugModel, self).save(*args, **kwargs)
 
     def __unicode__(self):
