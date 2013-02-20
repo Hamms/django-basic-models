@@ -24,6 +24,7 @@ import re
 
 from basic_models.managers import HasActiveManager, IsActiveManager, SlugModelManager, IsActiveSlugModelManager, OnlyOneActiveManager
 
+__all__ = ["ActiveModel","TimestampedModel","UserModel","DefaultModel","SlugModel","OnlyOneActiveModel"]
 
 class ActiveModel(cachemodels.CacheModel):
     is_active = models.BooleanField(default=True, db_index=True)
